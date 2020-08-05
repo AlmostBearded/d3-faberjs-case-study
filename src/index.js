@@ -171,7 +171,9 @@ function renderCategoricAxis() {
     .select('.ticks')
     .call(d3.axisBottom(categoricScale))
     .attr('font-size', null)
-    .attr('font-family', null);
+    .attr('font-family', null)
+    .selectAll('text')
+    .attr('dy', null);
 
   categoricAxisSelection
     .select('.title')

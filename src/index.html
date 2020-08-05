@@ -17,6 +17,18 @@
       .left-axis .title {
         transform: rotate(-90deg);
       }
+
+      .bottom-axis .ticks text {
+        transform: translate(0, 0.5em) rotate(-60deg);
+        text-anchor: end;
+      }
+
+      @media screen and (min-width: 40rem) {
+        .bottom-axis .ticks text {
+          transform: translate(0, 0.7em) rotate(0deg);
+          text-anchor: middle;
+        }
+      }
     </style>
   </head>
   <body>

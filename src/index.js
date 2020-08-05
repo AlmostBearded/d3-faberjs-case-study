@@ -186,7 +186,6 @@ function renderNumericAxis() {
     .select('.title')
     .attr('text-anchor', 'end')
     .attr('dy', '0.7em')
-    .attr('transform', 'rotate(-90)')
     .text(config.numericAxis.title || '');
 
   numericAxisSelection

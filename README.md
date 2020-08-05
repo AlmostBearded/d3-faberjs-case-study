@@ -2,6 +2,8 @@
 
 This is a case study evaluating layouting of individual elements of D3 charts with the FaberJS layout engine.
 
+A live version of the `master` branch is can be found at [d3-faberjs-case-study.netlify.app](https://d3-faberjs-case-study.netlify.app/).
+
 # Commands
 
 ## Installing

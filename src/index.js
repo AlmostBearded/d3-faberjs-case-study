@@ -195,7 +195,9 @@ function renderNumericAxis() {
     .call(d3.axisLeft(numericScale))
     .attr('font-size', null)
     .attr('font-family', null)
-    .call((e) => e.attr('transform', `translate(${e.node().getBoundingClientRect().width}, 0)`));
+    .call((e) => e.attr('transform', `translate(${e.node().getBoundingClientRect().width}, 0)`))
+    .selectAll('text')
+    .attr('dy', null);
 }
 
 function renderBars() {

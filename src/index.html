@@ -28,6 +28,10 @@
         transform: translate(0, -0.3em) rotate(-45deg);
       }
 
+      .left-axis {
+        transform: scale(0, 1);
+      }
+
       @media screen and (min-width: 40rem) {
         .bottom-axis .ticks text {
           transform: translate(0, 0.7em) rotate(0deg);
@@ -36,6 +40,10 @@
 
         .left-axis .ticks text {
           transform: translate(0, 0.3em);
+        }
+
+        .left-axis {
+          transform: scale(1, 1);
         }
       }
     </style>

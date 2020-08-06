@@ -15,12 +15,10 @@ var data = [
 // Configuration for the chart
 var config = {
   numericAxis: {
-    visible: true,
     title: 'Population',
     titleMargin: 10,
   },
   categoricAxis: {
-    visible: true,
     title: 'Countries',
     titleMargin: 10,
   },
@@ -165,8 +163,6 @@ function scaffoldChart() {
 }
 
 function renderCategoricAxis() {
-  categoricAxisSelection.attr('transform', `scale(${+config.categoricAxis.visible}, 1)`);
-
   categoricAxisSelection
     .select('.ticks')
     .call(d3.axisBottom(categoricScale))
@@ -182,8 +178,6 @@ function renderCategoricAxis() {
 }
 
 function renderNumericAxis() {
-  numericAxisSelection.attr('transform', `scale(${+config.numericAxis.visible}, 1)`);
-
   numericAxisSelection
     .select('.title')
     .attr('dy', '0.7em')

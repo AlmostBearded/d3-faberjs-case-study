@@ -193,10 +193,10 @@ function renderNumericAxis() {
 
 function renderBars() {
   barsSelection
-    .attr('fill', 'steelblue')
     .selectAll('rect')
     .data(data)
     .join('rect')
+    .classed('bar', true)
     .attr('x', (d) => categoricScale(d.city))
     .attr('y', (d) => numericScale(d.population))
     .attr('height', (d) => numericScale(0) - numericScale(d.population))

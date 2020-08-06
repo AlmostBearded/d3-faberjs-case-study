@@ -168,18 +168,15 @@ function renderCategoricAxis() {
     .call(d3.axisBottom(categoricScale))
     .attr('font-size', null)
     .attr('font-family', null)
-    .selectAll('text')
-    .attr('dy', null);
+    .call((s) => s.selectAll('text').attr('dy', null))
+    .call((s) => s.select('.domain').attr('stroke', null))
+    .call((s) => s.selectAll('.tick').attr('opacity', null).select('line').attr('stroke', null));
 
-  categoricAxisSelection
-    .select('.title')
-    .text(config.categoricAxis.title || '');
+  categoricAxisSelection.select('.title').text(config.categoricAxis.title || '');
 }
 
 function renderNumericAxis() {
-  numericAxisSelection
-    .select('.title')
-    .text(config.numericAxis.title || '');
+  numericAxisSelection.select('.title').text(config.numericAxis.title || '');
 
   numericAxisSelection
     .select('.ticks')
@@ -187,8 +184,9 @@ function renderNumericAxis() {
     .attr('font-size', null)
     .attr('font-family', null)
     .call((e) => e.attr('transform', `translate(${e.node().getBoundingClientRect().width}, 0)`))
-    .selectAll('text')
-    .attr('dy', null);
+    .call((s) => s.selectAll('text').attr('dy', null))
+    .call((s) => s.select('.domain').attr('stroke', null))
+    .call((s) => s.selectAll('.tick').attr('opacity', null).select('line').attr('stroke', null));
 }
 
 function renderBars() {

@@ -173,14 +173,12 @@ function renderCategoricAxis() {
 
   categoricAxisSelection
     .select('.title')
-    .attr('dy', '0.7em')
     .text(config.categoricAxis.title || '');
 }
 
 function renderNumericAxis() {
   numericAxisSelection
     .select('.title')
-    .attr('dy', '0.7em')
     .text(config.numericAxis.title || '');
 
   numericAxisSelection

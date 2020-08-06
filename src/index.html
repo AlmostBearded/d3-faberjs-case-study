@@ -14,13 +14,13 @@
         font-weight: bold;
       }
 
-      .left-axis .title {
-        transform: rotate(-90deg);
-        text-anchor: end;
+      .left-axis {
+        /* Hide the left axis */
+        /* transform: scale(0, 1); */
       }
 
-      .bottom-axis .ticks text {
-        transform: translate(0, 0.5em) rotate(-45deg);
+      .left-axis .title {
+        transform: translate(0.7em, 0) rotate(-90deg);
         text-anchor: end;
       }
 
@@ -28,22 +28,28 @@
         transform: translate(0, -0.3em) rotate(-45deg);
       }
 
-      .left-axis {
-        transform: scale(0, 1);
+      .bottom-axis .title {
+        transform: translate(0, 0.7em);
+      }
+
+      .bottom-axis .ticks text {
+        transform: translate(0, 0.5em) rotate(-45deg);
+        text-anchor: end;
       }
 
       @media screen and (min-width: 40rem) {
-        .bottom-axis .ticks text {
-          transform: translate(0, 0.7em) rotate(0deg);
-          text-anchor: middle;
+        .left-axis {
+          /* Show the left axis */
+          /* transform: scale(1, 1); */
         }
 
         .left-axis .ticks text {
           transform: translate(0, 0.3em);
         }
 
-        .left-axis {
-          transform: scale(1, 1);
+        .bottom-axis .ticks text {
+          transform: translate(0, 0.7em) rotate(0deg);
+          text-anchor: middle;
         }
       }
     </style>

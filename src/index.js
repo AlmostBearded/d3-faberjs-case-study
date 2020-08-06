@@ -186,7 +186,6 @@ function renderNumericAxis() {
 
   numericAxisSelection
     .select('.title')
-    .attr('text-anchor', 'end')
     .attr('dy', '0.7em')
     .text(config.numericAxis.title || '');
 

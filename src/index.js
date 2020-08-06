@@ -168,9 +168,17 @@ function renderCategoricAxis() {
     .call(d3.axisBottom(categoricScale))
     .attr('font-size', null)
     .attr('font-family', null)
-    .call((s) => s.selectAll('text').attr('dy', null))
-    .call((s) => s.select('.domain').attr('stroke', null))
-    .call((s) => s.selectAll('.tick').attr('opacity', null).select('line').attr('stroke', null));
+    .attr('text-anchor', null)
+    .attr('fill', null)
+    .call((ticks) => ticks.selectAll('text').attr('dy', null))
+    .call((ticks) => ticks.select('.domain').attr('stroke', null))
+    .call((ticks) =>
+      ticks
+        .selectAll('.tick')
+        .attr('opacity', null)
+        .call((tick) => tick.select('line').attr('stroke', null))
+        .call((tick) => tick.select('text').attr('fill', null))
+    );
 
   categoricAxisSelection.select('.title').text(config.categoricAxis.title || '');
 }
@@ -183,10 +191,20 @@ function renderNumericAxis() {
     .call(d3.axisLeft(numericScale))
     .attr('font-size', null)
     .attr('font-family', null)
-    .call((e) => e.attr('transform', `translate(${e.node().getBoundingClientRect().width}, 0)`))
-    .call((s) => s.selectAll('text').attr('dy', null))
-    .call((s) => s.select('.domain').attr('stroke', null))
-    .call((s) => s.selectAll('.tick').attr('opacity', null).select('line').attr('stroke', null));
+    .attr('text-anchor', null)
+    .attr('fill', null)
+    .call((ticks) =>
+      ticks.attr('transform', `translate(${ticks.node().getBoundingClientRect().width}, 0)`)
+    )
+    .call((ticks) => ticks.selectAll('text').attr('dy', null))
+    .call((ticks) => ticks.select('.domain').attr('stroke', null))
+    .call((ticks) =>
+      ticks
+        .selectAll('.tick')
+        .attr('opacity', null)
+        .call((tick) => tick.select('line').attr('stroke', null))
+        .call((tick) => tick.select('text').attr('fill', null))
+    );
 }
 
 function renderBars() {

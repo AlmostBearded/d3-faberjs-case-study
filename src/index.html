@@ -14,8 +14,13 @@
         font-weight: bold;
       }
 
-      .axis .ticks .domain, .axis .tick line {
+      .axis .ticks .domain,
+      .axis .tick line {
         stroke: black;
+      }
+
+      .axis .ticks .domain {
+        fill: none;
       }
 
       .left-axis {
@@ -30,6 +35,7 @@
 
       .left-axis .ticks text {
         transform: translate(0, -0.3em) rotate(-45deg);
+        text-anchor: end;
       }
 
       .bottom-axis .title {

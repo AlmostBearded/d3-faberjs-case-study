@@ -71,5 +71,6 @@ export function applyLayout(nodes, layoutNodes) {
   for (var i = 0; i < nodes.length; ++i) {
     var layoutTransform = `translate(${layoutNodes[i].layout.x}, ${layoutNodes[i].layout.y})`;
     nodes[i].setAttribute('transform', layoutTransform);
+    nodes[i].setAttribute('debugLayout', `${layoutNodes[i].layout.x}, ${layoutNodes[i].layout.y}, ${layoutNodes[i].layout.width}, ${layoutNodes[i].layout.height}`);
   }
 }

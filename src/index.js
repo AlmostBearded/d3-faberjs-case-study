@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import { parseNodeHierarchy, computeLayout, applyLayout } from './layout';
+import { axis } from './axis';
 
 // Data representing the populations of large Austrian cities
 var data = [
@@ -50,8 +51,13 @@ var numericAxisSelection, categoricAxisSelection, barsSelection;
 scaffoldChart();
 
 // Initial rendering of the axes to access their sizes during layouting
-renderCategoricAxis();
-renderNumericAxis();
+var categoricAxis = axis()
+  .position('Bottom')
+  .scale(categoricScale)
+  .title(config.categoricAxis.title);
+var numericAxis = axis().position('Left').scale(numericScale).title(config.numericAxis.title);
+categoricAxisSelection.call(categoricAxis);
+numericAxisSelection.call(numericAxis);
 
 // Parse the DOM hierarchy
 var layoutDOMNodes = [];
@@ -162,51 +168,6 @@ function scaffoldChart() {
   }
 }
 
-function renderCategoricAxis() {
-  categoricAxisSelection
-    .select('.ticks')
-    .call(d3.axisBottom(categoricScale))
-    .attr('font-size', null)
-    .attr('font-family', null)
-    .attr('text-anchor', null)
-    .attr('fill', null)
-    .call((ticks) => ticks.selectAll('text').attr('dy', null))
-    .call((ticks) => ticks.select('.domain').attr('stroke', null))
-    .call((ticks) =>
-      ticks
-        .selectAll('.tick')
-        .attr('opacity', null)
-        .call((tick) => tick.select('line').attr('stroke', null))
-        .call((tick) => tick.select('text').attr('fill', null))
-    );
-
-  categoricAxisSelection.select('.title').text(config.categoricAxis.title || '');
-}
-
-function renderNumericAxis() {
-  numericAxisSelection.select('.title').text(config.numericAxis.title || '');
-
-  numericAxisSelection
-    .select('.ticks')
-    .call(d3.axisLeft(numericScale))
-    .attr('font-size', null)
-    .attr('font-family', null)
-    .attr('text-anchor', null)
-    .attr('fill', null)
-    .call((ticks) =>
-      ticks.attr('transform', `translate(${ticks.node().getBoundingClientRect().width}, 0)`)
-    )
-    .call((ticks) => ticks.selectAll('text').attr('dy', null))
-    .call((ticks) => ticks.select('.domain').attr('stroke', null))
-    .call((ticks) =>
-      ticks
-        .selectAll('.tick')
-        .attr('opacity', null)
-        .call((tick) => tick.select('line').attr('stroke', null))
-        .call((tick) => tick.select('text').attr('fill', null))
-    );
-}
-
 function renderBars() {
   barsSelection
     .selectAll('rect')
@@ -235,8 +196,8 @@ function updateLayout() {
   numericScale.range([barsLayout.height, 0]);
 
   // Rerender the axes and render the bars now that the scales have correct ranges
-  renderCategoricAxis();
-  renderNumericAxis();
+  categoricAxis.scale(categoricScale);
+  numericAxis.scale(numericScale);
   renderBars();
 
   // Position the different nodes according to the layout

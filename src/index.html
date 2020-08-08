@@ -23,14 +23,52 @@
         fill: none;
       }
 
+      .bar-chart {
+        display: grid;
+        grid-template-columns: [leftMargin] 5px [axis] auto [bars] 1fr [rightMargin] 5px;
+        grid-template-rows: [topMargin] 5px [bars] 1fr [axis] auto [bottomMargin] 5px;
+        justify-items: stretch;
+        align-items: stretch;
+      }
+
+      .bar-chart .left-axis {
+        grid-column: axis / span 1;
+        grid-row: bars / span 1;
+      }
+
+      .bar-chart .bottom-axis {
+        grid-column: bars / span 1;
+        grid-row: axis / span 1;
+      }
+
+      .bar-chart .bars {
+        grid-column: bars / span 1;
+        grid-row: bars / span 1;
+      }
+
       .left-axis {
-        /* Hide the left axis */
-        /* transform: scale(0, 1); */
+        display: grid;
+        height: max-content;
+        grid-template-columns: [title] auto [margin] 10px [ticks] auto;
+
+        /* transform: scale(0, 1); */ /* Hide the left axis */
+      }
+
+      .left-axis .ticks {
+        width: fit-content;
+        grid-column: ticks / span 1;
+        grid-row: 1 / span 1;
       }
 
       .left-axis .title {
         transform: translate(0.7em, 0) rotate(-90deg);
         text-anchor: end;
+
+        height: fit-content;
+        width: fit-content;
+        grid-column: title / span 1;
+        grid-row: 1 / span 1;
+        align-self: center;
       }
 
       .left-axis .ticks text {
@@ -38,13 +76,30 @@
         text-anchor: end;
       }
 
-      .bottom-axis .title {
-        transform: translate(0, 0.7em);
+      .bottom-axis {
+        width: max-content;
+        display: grid;
+        grid-template-rows: [ticks] auto [margin] 10px [title] auto;
+      }
+
+      .bottom-axis .ticks {
+        height: fit-content;
+        grid-column: 1 / span 1;
+        grid-row: ticks / span 1;
       }
 
       .bottom-axis .ticks text {
         transform: translate(0, 0.5em) rotate(-45deg);
         text-anchor: end;
+      }
+
+      .bottom-axis .title {
+        transform: translate(0, 0.7em);
+        height: fit-content;
+        width: fit-content;
+        grid-column: 1 / span 1;
+        grid-row: title / span 1;
+        justify-self: center;
       }
 
       .bar {
@@ -53,6 +108,11 @@
       }
 
       @media screen and (min-width: 40rem) {
+        .bar-chart {
+          grid-template-columns: [leftMargin] 25px [axis] auto [bars] 1fr [rightMargin] 25px;
+          grid-template-rows: [topMargin] 25px [bars] 1fr [axis] auto [bottomMargin] 25px;
+        }
+
         .left-axis {
           /* Show the left axis */
           /* transform: scale(1, 1); */

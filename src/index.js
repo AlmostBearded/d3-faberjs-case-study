@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
-import { parseNodeHierarchy, computeLayout, applyLayout } from './layout';
-import { axis } from './axis';
+import { parseCSSLayoutStyle, parseNodeHierarchy, computeLayout, applyLayout } from './layout';
+// import { axis } from './axis';
+import { renderLeftTicks, renderBottomTicks, renderTitle } from './axis';
 
 // Data representing the populations of large Austrian cities
 var data = [
@@ -42,7 +43,7 @@ var numericScale = d3
   .range([boundingRect.height, 0]);
 
 // Create the root node of the chart
-var svgSelection = d3.select('#chart').append('svg');
+var svgSelection = d3.select('#chart').append('svg').classed('chart bar-chart', true);
 
 // Cached selection variables
 var numericAxisSelection, categoricAxisSelection, barsSelection;
@@ -51,17 +52,24 @@ var numericAxisSelection, categoricAxisSelection, barsSelection;
 scaffoldChart();
 
 // Initial rendering of the axes to access their sizes during layouting
-var categoricAxis = axis()
-  .position('Bottom')
-  .scale(categoricScale)
-  .title(config.categoricAxis.title);
-var numericAxis = axis().position('Left').scale(numericScale).title(config.numericAxis.title);
-categoricAxisSelection.call(categoricAxis);
-numericAxisSelection.call(numericAxis);
+numericAxisSelection
+  .call(renderLeftTicks, numericScale)
+  .call(renderTitle, config.numericAxis.title);
+categoricAxisSelection
+  .call(renderBottomTicks, categoricScale)
+  .call(renderTitle, config.categoricAxis.title);
+// var categoricAxis = axis()
+//   .position('Bottom')
+//   .scale(categoricScale)
+//   .title(config.categoricAxis.title);
+// var numericAxis = axis().position('Left').scale(numericScale).title(config.numericAxis.title);
+// categoricAxisSelection.call(categoricAxis);
+// numericAxisSelection.call(numericAxis);
 
 // Parse the DOM hierarchy
 var layoutDOMNodes = [];
 var layoutNodes = [];
+parseCSSLayoutStyle(svgSelection.node());
 parseNodeHierarchy(svgSelection.node(), layoutDOMNodes, layoutNodes);
 // console.log(layoutDOMNodes);
 // console.log(layoutNodes);
@@ -79,92 +87,18 @@ function getBoundingRect(selector) {
 
 // Scaffold the desired layout of the chart
 function scaffoldChart() {
-  // This function has been organized using unnecessary blocks to reflect nesting of nodes
-
-  svgSelection.each(function () {
-    this.layoutStyle = {
-      display: 'grid',
-      gridTemplateColumns: `[.] ${config.margin} [axis] auto [bars] 1fr [.] ${config.margin}`,
-      gridTemplateRows: `[.] ${config.margin} [bars] 1fr [axis] auto [.] ${config.margin}`,
-      justifyItems: 'stretch',
-      alignItems: 'stretch',
-    };
-  });
+  numericAxisSelection = svgSelection.append('g').classed('axis left-axis numeric-axis', true);
   {
-    numericAxisSelection = svgSelection
-      .append('g')
-      .classed('axis left-axis numeric-axis', true)
-      .each(function () {
-        this.layoutStyle = {
-          display: 'grid',
-          height: 'layout',
-          gridTemplateColumns: `[title] auto [margin] ${config.numericAxis.titleMargin} [ticks] auto`,
-          gridColumn: 'axis / span 1',
-          gridRow: 'bars / span 1',
-        };
-      });
-    {
-      numericAxisSelection
-        .append('text')
-        .classed('title', true)
-        .each(function () {
-          this.layoutStyle = {
-            width: 'auto',
-            height: 'auto',
-            gridColumn: 'title / span 1',
-            gridRow: '1 / span 1',
-            alignSelf: 'center',
-          };
-        });
-      numericAxisSelection
-        .append('g')
-        .classed('ticks', true)
-        .each(function () {
-          this.layoutStyle = { width: 'auto', gridColumn: 'ticks / span 1', gridRow: '1 / span 1' };
-        });
-    }
-    barsSelection = svgSelection
-      .append('g')
-      .classed('bars', true)
-      .each(function () {
-        this.layoutStyle = { gridColumn: 'bars / span 1', gridRow: 'bars / span 1' };
-      });
+    numericAxisSelection.append('text').classed('title', true);
+    numericAxisSelection.append('g').classed('ticks', true);
   }
+  barsSelection = svgSelection.append('g').classed('bars', true);
   categoricAxisSelection = svgSelection
     .append('g')
-    .classed('axis bottom-axis categoric-axis', true)
-    .each(function () {
-      this.layoutStyle = {
-        width: 'layout',
-        display: 'grid',
-        gridTemplateRows: `[ticks] auto [margin] ${config.categoricAxis.titleMargin} [title] auto`,
-        gridColumn: 'bars / span 1',
-        gridRow: 'axis / span 1',
-      };
-    });
+    .classed('axis bottom-axis categoric-axis', true);
   {
-    categoricAxisSelection
-      .append('g')
-      .classed('ticks', true)
-      .each(function () {
-        this.layoutStyle = {
-          height: 'auto',
-          gridColumn: '1 / span 1',
-          gridRow: 'ticks / span 1',
-        };
-      });
-    categoricAxisSelection
-      .append('text')
-      .classed('title', true)
-      .each(function () {
-        this.layoutStyle = {
-          height: 'auto',
-          width: 'auto',
-          gridColumn: '1 / span 1',
-          gridRow: 'title / span 1',
-          justifySelf: 'center',
-        };
-      });
+    categoricAxisSelection.append('g').classed('ticks', true);
+    categoricAxisSelection.append('text').classed('title', true);
   }
 }
 
@@ -196,8 +130,11 @@ function updateLayout() {
   numericScale.range([barsLayout.height, 0]);
 
   // Rerender the axes and render the bars now that the scales have correct ranges
-  categoricAxis.scale(categoricScale);
-  numericAxis.scale(numericScale);
+  // categoricAxis.scale(categoricScale);
+  // numericAxis.scale(numericScale);
+  numericAxisSelection.call(renderLeftTicks, numericScale);
+  categoricAxisSelection.call(renderBottomTicks, categoricScale);
+
   renderBars();
 
   // Position the different nodes according to the layout

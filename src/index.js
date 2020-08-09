@@ -60,7 +60,7 @@ var categoricAxisSelection = svgSelection
   .call(renderBottomTicks, categoricScale)
   .call(renderTitle, config.categoricAxis.title);
 
-var barsSelection = svgSelection.append('g').classed('bars', true);
+var barsSelection = svgSelection.append('g').classed('bars', true).lower();
 
 // Parse the DOM hierarchy
 var { laidOutElements, layoutHierarchyNodes } = parseDOMHierarchy(svgSelection.node());

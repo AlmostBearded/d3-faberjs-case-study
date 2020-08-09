@@ -42,3 +42,4 @@ export function getComputedStyleWithoutDefaults(element) {
 
   return diff;
 }
+

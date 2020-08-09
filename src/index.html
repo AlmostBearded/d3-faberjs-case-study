@@ -25,8 +25,8 @@
 
       .bar-chart {
         display: grid;
-        grid-template-columns: [leftMargin] 5px [axis] auto [bars] 1fr [rightMargin] 5px;
-        grid-template-rows: [topMargin] 5px [bars] 1fr [axis] auto [bottomMargin] 5px;
+        grid-template-columns: [leftMargin] 0px [axis] auto [bars] 1fr [rightMargin] 0px;
+        grid-template-rows: [topMargin] 0px [bars] 1fr [axis] auto [bottomMargin] 0px;
         justify-items: stretch;
         align-items: stretch;
       }
@@ -48,9 +48,7 @@
 
       .left-axis {
         display: grid;
-        height: max-content;
-        grid-template-columns: [title] auto [margin] 10px [ticks] auto;
-
+        grid-template-columns: [title] auto [margin] 0px [ticks] auto;
         /* transform: scale(0, 1); */ /* Hide the left axis */
       }
 
@@ -77,9 +75,8 @@
       }
 
       .bottom-axis {
-        width: max-content;
         display: grid;
-        grid-template-rows: [ticks] auto [margin] 10px [title] auto;
+        grid-template-rows: [ticks] auto [margin] 0px [title] auto;
       }
 
       .bottom-axis .ticks {
@@ -114,6 +111,12 @@
         }
 
         .left-axis {
+          grid-template-columns: [title] auto [margin] 10px [ticks] auto;
+          /* transform: scale(1, 1); */ /* Show the left axis */
+        }
+
+        .bottom-axis {
+          grid-template-rows: [ticks] auto [margin] 10px [title] auto;
           /* Show the left axis */
           /* transform: scale(1, 1); */
         }

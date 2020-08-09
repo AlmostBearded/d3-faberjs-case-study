@@ -1,5 +1,10 @@
 import * as d3 from 'd3';
-import { parseCSSLayoutStyle, parseNodeHierarchy, computeLayout, applyLayout } from './layout';
+import {
+  parseDOMHierarchy,
+  createLayoutGroups,
+  computeLayout,
+  applyLayout,
+} from './layout';
 // import { axis } from './axis';
 import { renderLeftTicks, renderBottomTicks, renderTitle } from './axis';
 
@@ -43,7 +48,10 @@ var numericScale = d3
   .range([boundingRect.height, 0]);
 
 // Create the root node of the chart
-var svgSelection = d3.select('#chart').append('svg').classed('chart bar-chart', true);
+var svgSelection = d3
+  .select('#chart')
+  .append('svg')
+  .classed('chart bar-chart', true);
 
 // Cached selection variables
 var numericAxisSelection, categoricAxisSelection, barsSelection;
@@ -67,12 +75,10 @@ categoricAxisSelection
 // numericAxisSelection.call(numericAxis);
 
 // Parse the DOM hierarchy
-var layoutDOMNodes = [];
-var layoutNodes = [];
-parseCSSLayoutStyle(svgSelection.node());
-parseNodeHierarchy(svgSelection.node(), layoutDOMNodes, layoutNodes);
-// console.log(layoutDOMNodes);
-// console.log(layoutNodes);
+var { laidOutElements, layoutHierarchyNodes } = parseDOMHierarchy(
+  svgSelection.node()
+);
+var layoutGroupElements = createLayoutGroups(laidOutElements);
 
 // Update the layout to fit into the bounding rect dimensions
 updateLayout();
@@ -87,7 +93,9 @@ function getBoundingRect(selector) {
 
 // Scaffold the desired layout of the chart
 function scaffoldChart() {
-  numericAxisSelection = svgSelection.append('g').classed('axis left-axis numeric-axis', true);
+  numericAxisSelection = svgSelection
+    .append('g')
+    .classed('axis left-axis numeric-axis', true);
   {
     numericAxisSelection.append('text').classed('title', true);
     numericAxisSelection.append('g').classed('ticks', true);
@@ -119,15 +127,19 @@ function updateLayout() {
   boundingRect = getBoundingRect('#chart');
 
   // Update the viewbox of the chart
-  svgSelection.attr('viewBox', `0, 0, ${boundingRect.width}, ${boundingRect.height}`);
+  svgSelection.attr(
+    'viewBox',
+    `0, 0, ${boundingRect.width}, ${boundingRect.height}`
+  );
 
   // Calculate the layout
-  computeLayout(boundingRect, layoutDOMNodes, layoutNodes);
+  computeLayout(laidOutElements, layoutHierarchyNodes, boundingRect);
 
   // Resize the range of the scale to fit into the calculated size of the bar drawing area
-  var barsLayout = layoutNodes[layoutDOMNodes.indexOf(barsSelection.node().parentNode)].layout;
-  categoricScale.range([0, barsLayout.width]);
-  numericScale.range([barsLayout.height, 0]);
+  var barsLayoutNode =
+    layoutHierarchyNodes[laidOutElements.indexOf(barsSelection.node())];
+  categoricScale.range([0, barsLayoutNode.layout.width]);
+  numericScale.range([barsLayoutNode.layout.height, 0]);
 
   // Rerender the axes and render the bars now that the scales have correct ranges
   // categoricAxis.scale(categoricScale);
@@ -138,5 +150,5 @@ function updateLayout() {
   renderBars();
 
   // Position the different nodes according to the layout
-  applyLayout(layoutDOMNodes, layoutNodes);
+  applyLayout(layoutGroupElements, layoutHierarchyNodes);
 }

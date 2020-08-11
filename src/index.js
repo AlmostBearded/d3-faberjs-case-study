@@ -2,6 +2,7 @@ import * as d3 from 'd3';
 import {
   parseDOMHierarchy,
   createLayoutGroups,
+  removeLayoutGroups,
   computeLayout,
   applyLayout,
 } from './layout';
@@ -30,11 +31,11 @@ var config = {
   barDirection: 'Horizontal', // 'Vertical' or 'Horizontal'
 };
 
+var mediumMediaQuery = window.matchMedia('screen and (min-width: 40rem)');
+config.barDirection = mediumMediaQuery.matches ? 'Vertical' : 'Horizontal';
+
 // Create the root node of the chart
-var svgSelection = d3
-  .select('#chart')
-  .append('svg')
-  .classed('chart bar-chart', true);
+var svgSelection = d3.select('#chart').append('svg').classed('chart bar-chart', true);
 
 // Calculate bounding rect of the chart
 var boundingRect = svgSelection.node().getBoundingClientRect();
@@ -44,9 +45,7 @@ var categoricScale = d3
   .domain(data.map((d) => d.city))
   .padding(0.05);
 
-var numericScale = d3
-  .scaleLinear()
-  .domain([0, d3.max(data, (d) => d.population)]);
+var numericScale = d3.scaleLinear().domain([0, d3.max(data, (d) => d.population)]);
 
 if (config.barDirection === 'Vertical') {
   categoricScale.range([0, boundingRect.width]);
@@ -67,55 +66,77 @@ var categoricAxisSelection = svgSelection
   .call(renderTitle, config.categoricAxis.title);
 
 if (config.barDirection === 'Vertical') {
-  numericAxisSelection
-    .classed('left-axis', true)
-    .call(renderLeftTicks, numericScale);
-  categoricAxisSelection
-    .classed('bottom-axis', true)
-    .call(renderBottomTicks, categoricScale);
+  numericAxisSelection.classed('left-axis', true).call(renderLeftTicks, numericScale);
+  categoricAxisSelection.classed('bottom-axis', true).call(renderBottomTicks, categoricScale);
 } else if (config.barDirection === 'Horizontal') {
-  categoricAxisSelection
-    .classed('left-axis', true)
-    .call(renderLeftTicks, categoricScale);
-  numericAxisSelection
-    .classed('bottom-axis', true)
-    .call(renderBottomTicks, numericScale);
+  categoricAxisSelection.classed('left-axis', true).call(renderLeftTicks, categoricScale);
+  numericAxisSelection.classed('bottom-axis', true).call(renderBottomTicks, numericScale);
 }
 
 var barsSelection = svgSelection.append('g').classed('bars', true).lower();
 
 // Parse the DOM hierarchy
-var { laidOutElements, layoutHierarchyNodes } = parseDOMHierarchy(
-  svgSelection.node()
-);
+var { laidOutElements, layoutHierarchyNodes } = parseDOMHierarchy(svgSelection.node());
 var layoutGroupElements = createLayoutGroups(laidOutElements);
 
-// Update the layout to fit into the bounding rect dimensions
+window.addEventListener('resize', updateLayout);
 updateLayout();
 
-window.addEventListener('resize', updateLayout);
+mediumMediaQuery.addEventListener('change', function () {
+  config.barDirection = mediumMediaQuery.matches ? 'Vertical' : 'Horizontal';
 
-// var mediumMediaQuery = window.matchMedia("screen and (min-width: 40rem)");
-// mediumMediaQuery.addEventListener("change", function() {
+  numericAxisSelection.call(function () {
+    numericAxisSelection.select('.ticks').remove();
+  });
+  categoricAxisSelection.call(function () {
+    categoricAxisSelection.select('.ticks').remove();
+  });
 
-// });
+  if (config.barDirection === 'Vertical') {
+    numericAxisSelection
+      .classed('bottom-axis', false)
+      .classed('left-axis', true)
+      .call(renderLeftTicks, numericScale);
+    categoricAxisSelection
+      .classed('left-axis', false)
+      .classed('bottom-axis', true)
+      .call(renderBottomTicks, categoricScale);
+  } else if (config.barDirection === 'Horizontal') {
+    numericAxisSelection
+      .classed('left-axis', false)
+      .classed('bottom-axis', true)
+      .call(renderBottomTicks, numericScale);
+    categoricAxisSelection
+      .classed('bottom-axis', false)
+      .classed('left-axis', true)
+      .call(renderLeftTicks, categoricScale);
+  }
+
+  // debugger;
+  var bars = barsSelection.selectAll('rect').nodes();
+  barsSelection.selectAll('rect').remove();
+
+  removeLayoutGroups(layoutGroupElements);
+  ({ laidOutElements, layoutHierarchyNodes } = parseDOMHierarchy(svgSelection.node()));
+  layoutGroupElements = createLayoutGroups(laidOutElements);
+
+  barsSelection.node().append(bars);
+
+  updateLayout();
+});
 
 function updateLayout() {
   // Update the size of the bounding rect
   boundingRect = svgSelection.node().getBoundingClientRect();
 
   // Update the viewbox of the chart
-  svgSelection.attr(
-    'viewBox',
-    `0, 0, ${boundingRect.width}, ${boundingRect.height}`
-  );
+  svgSelection.attr('viewBox', `0, 0, ${boundingRect.width}, ${boundingRect.height}`);
 
   // Calculate the layout
   computeLayout(laidOutElements, layoutHierarchyNodes, boundingRect);
 
   // Resize the range of the scale to fit into the calculated size of the bar drawing area
-  var barsLayoutNode =
-    layoutHierarchyNodes[laidOutElements.indexOf(barsSelection.node())];
+  var barsLayoutNode = layoutHierarchyNodes[laidOutElements.indexOf(barsSelection.node())];
   if (config.barDirection === 'Vertical') {
     categoricScale.range([0, barsLayoutNode.layout.width]);
     numericScale.range([barsLayoutNode.layout.height, 0]);
@@ -134,10 +155,7 @@ function updateLayout() {
     return { bandScaleValue: d.city, linearScaleValue: d.population };
   });
 
-  var renderBars =
-    config.barDirection === 'Vertical'
-      ? renderVerticalBars
-      : renderHorizontalBars;
+  var renderBars = config.barDirection === 'Vertical' ? renderVerticalBars : renderHorizontalBars;
   barsSelection.call(renderBars, barsData, categoricScale, numericScale);
 
   // Position the different nodes according to the layout

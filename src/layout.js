@@ -82,11 +82,22 @@ export function createLayoutGroups(laidOutElements) {
       'http://www.w3.org/2000/svg',
       'g'
     );
+    groupElement.setAttribute('class', 'layout-group');
     laidOutElements[i].parentNode.append(groupElement);
     groupElement.append(laidOutElements[i]);
     groupElements.push(groupElement);
   }
   return groupElements;
+}
+
+export function removeLayoutGroups(layoutGroupElements) {
+  for (var i = 1; i < layoutGroupElements.length; ++i) {
+
+    var laidOutElement = layoutGroupElements[i].children[0];
+    // laidOutElement.remove();
+    layoutGroupElements[i].parentNode.append(laidOutElement);
+    layoutGroupElements[i].remove();
+  }
 }
 
 function cacheLayoutStyles(laidOutElements, layoutHierarchyNodes) {

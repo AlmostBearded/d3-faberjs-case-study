@@ -36,6 +36,18 @@ export function renderBottomTicks(selection, scale) {
   selection.call(renderTicks, 'Bottom', scale);
 }
 
+export function clearTickAttributes(selection) {
+  selection
+    .select('.ticks')
+    .attr('transform', 'translate(0, 0)')
+    .call(function (ticksSelection) {
+      ticksSelection.selectAll('line').attr('x2', 0).attr('y2', 0);
+    })
+    .call(function (ticksSelection) {
+      ticksSelection.selectAll('text').attr('x', 0).attr('y', 0);
+    });
+}
+
 export function renderTitle(selection, title) {
   selection.selectAll('.title').data([null]).join('text').classed('title', true).text(title);
 }

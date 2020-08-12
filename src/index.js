@@ -6,7 +6,7 @@ import {
   computeLayout,
   applyLayout,
 } from './layout';
-import { renderLeftTicks, renderBottomTicks, renderTitle } from './axis';
+import { renderLeftTicks, renderBottomTicks, renderTitle, clearTickAttributes } from './axis';
 import { renderVerticalBars, renderHorizontalBars } from './bars';
 
 // Data representing the populations of large Austrian cities
@@ -85,12 +85,8 @@ updateLayout();
 mediumMediaQuery.addEventListener('change', function () {
   config.barDirection = mediumMediaQuery.matches ? 'Vertical' : 'Horizontal';
 
-  numericAxisSelection.call(function () {
-    numericAxisSelection.select('.ticks').remove();
-  });
-  categoricAxisSelection.call(function () {
-    categoricAxisSelection.select('.ticks').remove();
-  });
+  numericAxisSelection.call(clearTickAttributes);
+  categoricAxisSelection.call(clearTickAttributes);
 
   if (config.barDirection === 'Vertical') {
     numericAxisSelection
@@ -113,14 +109,14 @@ mediumMediaQuery.addEventListener('change', function () {
   }
 
   // debugger;
-  var bars = barsSelection.selectAll('rect').nodes();
-  barsSelection.selectAll('rect').remove();
+  // var bars = barsSelection.selectAll('rect').nodes();
+  // barsSelection.selectAll('rect').remove();
 
-  removeLayoutGroups(layoutGroupElements);
-  ({ laidOutElements, layoutHierarchyNodes } = parseDOMHierarchy(svgSelection.node()));
-  layoutGroupElements = createLayoutGroups(laidOutElements);
+  // removeLayoutGroups(layoutGroupElements);
+  // ({ laidOutElements, layoutHierarchyNodes } = parseDOMHierarchy(svgSelection.node()));
+  // layoutGroupElements = createLayoutGroups(laidOutElements);
 
-  barsSelection.node().append(bars);
+  // barsSelection.node().append(bars);
 
   updateLayout();
 });

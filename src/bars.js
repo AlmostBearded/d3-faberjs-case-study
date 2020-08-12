@@ -1,13 +1,19 @@
+import { chainedTransition } from './transition';
+
 export function renderVerticalBars(selection, data, bandScale, linearScale) {
   selection
     .selectAll('rect')
     .data(data)
     .join('rect')
     .classed('bar', true)
-    .attr('x', (d) => bandScale(d.bandScaleValue))
-    .attr('y', (d) => linearScale(d.linearScaleValue))
-    .attr('height', (d) => linearScale(0) - linearScale(d.linearScaleValue))
-    .attr('width', bandScale.bandwidth());
+    .each(function (d) {
+      chainedTransition(this)
+        .duration(1000)
+        .attr('x', bandScale(d.bandScaleValue))
+        .attr('y', linearScale(d.linearScaleValue))
+        .attr('height', linearScale(0) - linearScale(d.linearScaleValue))
+        .attr('width', bandScale.bandwidth());
+    });
 }
 
 export function renderHorizontalBars(selection, data, bandScale, linearScale) {
@@ -16,8 +22,12 @@ export function renderHorizontalBars(selection, data, bandScale, linearScale) {
     .data(data)
     .join('rect')
     .classed('bar', true)
-    .attr('x', (d) => linearScale(0))
-    .attr('y', (d) => bandScale(d.bandScaleValue))
-    .attr('height', bandScale.bandwidth())
-    .attr('width', (d) => linearScale(d.linearScaleValue));
+    .each(function (d) {
+      chainedTransition(this)
+        .duration(1000)
+        .attr('x', linearScale(0))
+        .attr('y', bandScale(d.bandScaleValue))
+        .attr('height', bandScale.bandwidth())
+        .attr('width', linearScale(d.linearScaleValue));
+    });
 }

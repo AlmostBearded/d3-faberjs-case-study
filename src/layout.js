@@ -1,5 +1,7 @@
 import { computeLayout as faberComputeLayout } from './faberjs';
 import { getComputedStyleWithoutDefaults } from './css';
+import { chainedTransition } from './transition';
+import * as d3 from 'd3';
 
 var layoutProperties = [
   'width',
@@ -47,11 +49,7 @@ export function parseDOMHierarchy(element) {
   return { laidOutElements, layoutHierarchyNodes };
 }
 
-function parseDOMHierarchyRecursive(
-  element,
-  laidOutElements,
-  layoutHierarchyNodes
-) {
+function parseDOMHierarchyRecursive(element, laidOutElements, layoutHierarchyNodes) {
   var hierarchyNode = {
     children: [],
   };
@@ -78,10 +76,7 @@ export function createLayoutGroups(laidOutElements) {
   var groupElements = [laidOutElements[0]];
 
   for (var i = 1; i < laidOutElements.length; ++i) {
-    var groupElement = document.createElementNS(
-      'http://www.w3.org/2000/svg',
-      'g'
-    );
+    var groupElement = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     groupElement.setAttribute('class', 'layout-group');
     laidOutElements[i].parentNode.append(groupElement);
     groupElement.append(laidOutElements[i]);
@@ -92,7 +87,6 @@ export function createLayoutGroups(laidOutElements) {
 
 export function removeLayoutGroups(layoutGroupElements) {
   for (var i = 1; i < layoutGroupElements.length; ++i) {
-
     var laidOutElement = layoutGroupElements[i].children[0];
     // laidOutElement.remove();
     layoutGroupElements[i].parentNode.append(laidOutElement);
@@ -123,13 +117,11 @@ function setFitContentDimensions(laidOutElements, layoutHierarchyNodes) {
 function setLayoutDimensions(layoutHierarchyNodes) {
   for (var i = 0; i < layoutHierarchyNodes.length; ++i) {
     if (!layoutHierarchyNodes[i].style.width) {
-      layoutHierarchyNodes[i].style.width =
-        layoutHierarchyNodes[i].layout.width;
+      layoutHierarchyNodes[i].style.width = layoutHierarchyNodes[i].layout.width;
     }
 
     if (!layoutHierarchyNodes[i].style.height) {
-      layoutHierarchyNodes[i].style.height =
-        layoutHierarchyNodes[i].layout.height;
+      layoutHierarchyNodes[i].style.height = layoutHierarchyNodes[i].layout.height;
     }
   }
 }
@@ -152,7 +144,7 @@ export function computeLayout(laidOutElements, layoutHierarchyNodes, size) {
 export function applyLayout(layoutGroupElements, layoutHierarchyNodes) {
   for (var i = 0; i < layoutHierarchyNodes.length; ++i) {
     var layoutTransform = `translate(${layoutHierarchyNodes[i].layout.x}, ${layoutHierarchyNodes[i].layout.y})`;
-    layoutGroupElements[i].setAttribute('transform', layoutTransform);
+    chainedTransition(layoutGroupElements[i]).duration(1000).attr('transform', layoutTransform);
 
     // layoutGroupElements[i].setAttribute(
     //   'debugLayout',

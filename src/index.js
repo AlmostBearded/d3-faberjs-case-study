@@ -8,6 +8,8 @@ import {
 } from './layout';
 import { renderLeftTicks, renderBottomTicks, renderTitle, clearTickAttributes } from './axis';
 import { renderVerticalBars, renderHorizontalBars } from './bars';
+import { chainedTransition } from './transition';
+import debounce from 'debounce';
 
 // Data representing the populations of large Austrian cities
 var data = [
@@ -55,10 +57,10 @@ if (config.barDirection === 'Vertical') {
   numericScale.range([0, boundingRect.width]);
 }
 
-var numericAxisSelection = svgSelection
-  .append('g')
-  .classed('axis numeric-axis', true)
-  .call(renderTitle, config.numericAxis.title);
+// var numericAxisSelection = svgSelection
+//   .append('g')
+//   .classed('axis numeric-axis', true)
+//   .call(renderTitle, config.numericAxis.title);
 
 var categoricAxisSelection = svgSelection
   .append('g')
@@ -66,11 +68,11 @@ var categoricAxisSelection = svgSelection
   .call(renderTitle, config.categoricAxis.title);
 
 if (config.barDirection === 'Vertical') {
-  numericAxisSelection.classed('left-axis', true).call(renderLeftTicks, numericScale);
+  // numericAxisSelection.classed('left-axis', true).call(renderLeftTicks, numericScale);
   categoricAxisSelection.classed('bottom-axis', true).call(renderBottomTicks, categoricScale);
 } else if (config.barDirection === 'Horizontal') {
   categoricAxisSelection.classed('left-axis', true).call(renderLeftTicks, categoricScale);
-  numericAxisSelection.classed('bottom-axis', true).call(renderBottomTicks, numericScale);
+  // numericAxisSelection.classed('bottom-axis', true).call(renderBottomTicks, numericScale);
 }
 
 var barsSelection = svgSelection.append('g').classed('bars', true).lower();
@@ -79,54 +81,55 @@ var barsSelection = svgSelection.append('g').classed('bars', true).lower();
 var { laidOutElements, layoutHierarchyNodes } = parseDOMHierarchy(svgSelection.node());
 var layoutGroupElements = createLayoutGroups(laidOutElements);
 
-window.addEventListener('resize', updateLayout);
+window.addEventListener(
+  'resize',
+  debounce(function () {
+    updateLayout();
+  }, 250)
+);
+window.addEventListener('resize', function () {
+  boundingRect = svgSelection.node().getBoundingClientRect();
+  svgSelection.attr('viewBox', `0, 0, ${boundingRect.width}, ${boundingRect.height}`);
+});
 updateLayout();
 
-mediumMediaQuery.addEventListener('change', function () {
-  config.barDirection = mediumMediaQuery.matches ? 'Vertical' : 'Horizontal';
-
-  numericAxisSelection.call(clearTickAttributes);
-  categoricAxisSelection.call(clearTickAttributes);
-
-  if (config.barDirection === 'Vertical') {
-    numericAxisSelection
-      .classed('bottom-axis', false)
-      .classed('left-axis', true)
-      .call(renderLeftTicks, numericScale);
-    categoricAxisSelection
-      .classed('left-axis', false)
-      .classed('bottom-axis', true)
-      .call(renderBottomTicks, categoricScale);
-  } else if (config.barDirection === 'Horizontal') {
-    numericAxisSelection
-      .classed('left-axis', false)
-      .classed('bottom-axis', true)
-      .call(renderBottomTicks, numericScale);
-    categoricAxisSelection
-      .classed('bottom-axis', false)
-      .classed('left-axis', true)
-      .call(renderLeftTicks, categoricScale);
-  }
-
-  // debugger;
-  // var bars = barsSelection.selectAll('rect').nodes();
-  // barsSelection.selectAll('rect').remove();
-
-  // removeLayoutGroups(layoutGroupElements);
-  // ({ laidOutElements, layoutHierarchyNodes } = parseDOMHierarchy(svgSelection.node()));
-  // layoutGroupElements = createLayoutGroups(laidOutElements);
-
-  // barsSelection.node().append(bars);
-
-  updateLayout();
-});
-
 function updateLayout() {
+  // var newBarDirection = mediumMediaQuery.matches ? 'Vertical' : 'Horizontal';
+
+  // if (newBarDirection !== config.barDirection) {
+  //   // numericAxisSelection.call(clearTickAttributes);
+  //   categoricAxisSelection.call(clearTickAttributes);
+
+  //   if (config.barDirection === 'Vertical') {
+  //     numericAxisSelection
+  //       .classed('bottom-axis', false)
+  //       .classed('left-axis', true)
+  //       .call(renderLeftTicks, numericScale);
+  //     categoricAxisSelection
+  //       .classed('left-axis', false)
+  //       .classed('bottom-axis', true)
+  //       .call(renderBottomTicks, categoricScale);
+  //   } else if (config.barDirection === 'Horizontal') {
+  //     numericAxisSelection
+  //       .classed('left-axis', false)
+  //       .classed('bottom-axis', true)
+  //       .call(renderBottomTicks, numericScale);
+  //     categoricAxisSelection
+  //       .classed('bottom-axis', false)
+  //       .classed('left-axis', true)
+  //       .call(renderLeftTicks, categoricScale);
+  //   }
+  //   config.barDirection = newBarDirection;
+  // }
+
   // Update the size of the bounding rect
   boundingRect = svgSelection.node().getBoundingClientRect();
 
   // Update the viewbox of the chart
-  svgSelection.attr('viewBox', `0, 0, ${boundingRect.width}, ${boundingRect.height}`);
+  // chainedTransition(svgSelection.node())
+  //   .duration(1000)
+  //   .attr('viewBox', `0, 0, ${boundingRect.width}, ${boundingRect.height}`);
+  // svgSelection.attr('viewBox', `0, 0, ${boundingRect.width}, ${boundingRect.height}`);
 
   // Calculate the layout
   computeLayout(laidOutElements, layoutHierarchyNodes, boundingRect);
@@ -137,14 +140,14 @@ function updateLayout() {
     categoricScale.range([0, barsLayoutNode.layout.width]);
     numericScale.range([barsLayoutNode.layout.height, 0]);
 
-    numericAxisSelection.call(renderLeftTicks, numericScale);
+    // numericAxisSelection.call(renderLeftTicks, numericScale);
     categoricAxisSelection.call(renderBottomTicks, categoricScale);
   } else if (config.barDirection === 'Horizontal') {
     categoricScale.range([0, barsLayoutNode.layout.height]);
     numericScale.range([0, barsLayoutNode.layout.width]);
 
     categoricAxisSelection.call(renderLeftTicks, categoricScale);
-    numericAxisSelection.call(renderBottomTicks, numericScale);
+    // numericAxisSelection.call(renderBottomTicks, numericScale);
   }
 
   var barsData = data.map(function (d) {

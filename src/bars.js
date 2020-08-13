@@ -1,6 +1,6 @@
 import { chainedTransition } from './transition';
 
-export function renderVerticalBars(selection, data, bandScale, linearScale) {
+export function renderVerticalBars(selection, data, bandScale, linearScale, transitionDuration) {
   selection
     .selectAll('rect')
     .data(data)
@@ -8,7 +8,7 @@ export function renderVerticalBars(selection, data, bandScale, linearScale) {
     .classed('bar', true)
     .each(function (d) {
       chainedTransition(this)
-        .duration(1000)
+        .duration(transitionDuration)
         .attr('x', bandScale(d.bandScaleValue))
         .attr('y', linearScale(d.linearScaleValue))
         .attr('height', linearScale(0) - linearScale(d.linearScaleValue))
@@ -16,7 +16,7 @@ export function renderVerticalBars(selection, data, bandScale, linearScale) {
     });
 }
 
-export function renderHorizontalBars(selection, data, bandScale, linearScale) {
+export function renderHorizontalBars(selection, data, bandScale, linearScale, transitionDuration) {
   selection
     .selectAll('rect')
     .data(data)
@@ -24,7 +24,7 @@ export function renderHorizontalBars(selection, data, bandScale, linearScale) {
     .classed('bar', true)
     .each(function (d) {
       chainedTransition(this)
-        .duration(1000)
+        .duration(transitionDuration)
         .attr('x', linearScale(0))
         .attr('y', bandScale(d.bandScaleValue))
         .attr('height', bandScale.bandwidth())

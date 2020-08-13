@@ -144,7 +144,8 @@ export function computeLayout(laidOutElements, layoutHierarchyNodes, size) {
 export function applyLayout(layoutGroupElements, layoutHierarchyNodes) {
   for (var i = 0; i < layoutHierarchyNodes.length; ++i) {
     var layoutTransform = `translate(${layoutHierarchyNodes[i].layout.x}, ${layoutHierarchyNodes[i].layout.y})`;
-    chainedTransition(layoutGroupElements[i]).duration(1000).attr('transform', layoutTransform);
+    // chainedTransition(layoutGroupElements[i]).duration(1000).attr('transform', layoutTransform);
+    layoutGroupElements[i].setAttribute(' w transform', layoutTransform);
 
     // layoutGroupElements[i].setAttribute(
     //   'debugLayout',

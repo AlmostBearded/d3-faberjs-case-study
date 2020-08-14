@@ -111,6 +111,21 @@
         stroke: rgb(63, 117, 162);
       }
 
+      .layout-group.transition {
+        transition: transform 1s;
+      }
+
+      .axis {
+        opacity: 1;
+        transition: opacity 0.5s;
+      }
+
+      .transition .axis {
+        opacity: 0;
+        transition: opacity 0s;
+      }
+
+
       @media screen and (min-width: 40rem) {
         .bar-chart {
           grid-template-columns: [leftMargin] 25px [axis] auto [bars] 1fr [rightMargin] 25px;

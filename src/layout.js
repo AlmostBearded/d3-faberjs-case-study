@@ -2,6 +2,7 @@ import { computeLayout as faberComputeLayout } from './faberjs';
 import { getComputedStyleWithoutDefaults } from './css';
 import { chainedTransition } from './transition';
 import * as d3 from 'd3';
+import { select, transition } from 'd3';
 
 var layoutProperties = [
   'width',
@@ -34,10 +35,6 @@ export function parseLayoutStyle(element) {
   if (Object.keys(layoutStyle).length === 0) {
     return null;
   }
-
-  // console.log(node);
-  // console.log(computedStyle);
-  // console.log(layoutStyle);
 
   return layoutStyle;
 }
@@ -88,7 +85,6 @@ export function createLayoutGroups(laidOutElements) {
 export function removeLayoutGroups(layoutGroupElements) {
   for (var i = 1; i < layoutGroupElements.length; ++i) {
     var laidOutElement = layoutGroupElements[i].children[0];
-    // laidOutElement.remove();
     layoutGroupElements[i].parentNode.append(laidOutElement);
     layoutGroupElements[i].remove();
   }
@@ -141,11 +137,16 @@ export function computeLayout(laidOutElements, layoutHierarchyNodes, size) {
   faberComputeLayout(layoutHierarchyNodes[0]);
 }
 
-export function applyLayout(layoutGroupElements, layoutHierarchyNodes) {
-  for (var i = 0; i < layoutHierarchyNodes.length; ++i) {
-    var layoutTransform = `translate(${layoutHierarchyNodes[i].layout.x}, ${layoutHierarchyNodes[i].layout.y})`;
-    // chainedTransition(layoutGroupElements[i]).duration(1000).attr('transform', layoutTransform);
-    layoutGroupElements[i].setAttribute(' w transform', layoutTransform);
+export function applyLayout(layoutGroupElements, layoutHierarchyNodes, transition) {
+  for (let i = 1; i < layoutHierarchyNodes.length; ++i) {
+
+    d3.select(layoutGroupElements[i])
+      .classed('transition', transition)
+      .style(
+        'transform',
+        `translate(${layoutHierarchyNodes[i].layout.x}px, ${layoutHierarchyNodes[i].layout.y}px)`
+      );
+
 
     // layoutGroupElements[i].setAttribute(
     //   'debugLayout',

@@ -5,7 +5,8 @@
     <style>
       #chart {
         width: 100%;
-        height: 30rem;
+        height: 40rem;
+        transition: height 0.5s;
       }
 
       #chart svg {
@@ -37,18 +38,18 @@
       }
 
       .bar-chart .left-axis {
-        grid-column: axis / span 1;
-        grid-row: bars / span 1;
+        grid-column: axis / bars;
+        grid-row: bars / axis;
       }
 
       .bar-chart .bottom-axis {
-        grid-column: bars / span 1;
-        grid-row: axis / span 1;
+        grid-column: bars / rightMargin;
+        grid-row: axis / bottomMargin;
       }
 
       .bar-chart .bars {
-        grid-column: bars / span 1;
-        grid-row: bars / span 1;
+        grid-column: bars / rightMargin;
+        grid-row: bars / axis;
       }
 
       .left-axis {
@@ -58,19 +59,19 @@
       }
 
       .left-axis .ticks {
-        width: fit-content;
-        grid-column: ticks / span 1;
-        grid-row: 1 / span 1;
+        width: min-content;
+        grid-column: ticks / 4;
+        grid-row: 1 / 2;
       }
 
       .left-axis .title {
         transform: translate(0.7em, 0) rotate(-90deg);
         text-anchor: end;
 
-        height: fit-content;
-        width: fit-content;
-        grid-column: title / span 1;
-        grid-row: 1 / span 1;
+        height: min-content;
+        width: min-content;
+        grid-column: title / margin;
+        grid-row: 1 / 2;
         align-self: center;
       }
 
@@ -86,9 +87,9 @@
       }
 
       .bottom-axis .ticks {
-        height: fit-content;
-        grid-column: 1 / span 1;
-        grid-row: ticks / span 1;
+        height: min-content;
+        grid-column: 1 / 2;
+        grid-row: ticks / margin;
       }
 
       .bottom-axis .ticks text {
@@ -99,10 +100,10 @@
 
       .bottom-axis .title {
         transform: translate(0, 0.7em);
-        height: fit-content;
-        width: fit-content;
-        grid-column: 1 / span 1;
-        grid-row: title / span 1;
+        height: min-content;
+        width: min-content;
+        grid-column: 1 / 2;
+        grid-row: title / 4;
         justify-self: center;
       }
 
@@ -127,6 +128,10 @@
 
 
       @media screen and (min-width: 40rem) {
+      #chart {
+        width: 100%;
+        height: 30rem;
+      }
         .bar-chart {
           grid-template-columns: [leftMargin] 25px [axis] auto [bars] 1fr [rightMargin] 25px;
           grid-template-rows: [topMargin] 25px [bars] 1fr [axis] auto [bottomMargin] 25px;

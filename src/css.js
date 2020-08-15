@@ -16,9 +16,8 @@ window.getComputedStyle =
  * @return {object} difference
  */
 
-export function getComputedStyleWithoutDefaults(element) {
+export function getComputedStyleWithoutDefaults(element, properties) {
   // creating an empty dummy object to compare with
-  document.createElementNS('http://www.w3.org/2000/svg', 'textPath');
   var dummy = document.createElementNS(
     'http://www.w3.org/2000/svg',
     'element-' + new Date().getTime()
@@ -30,16 +29,15 @@ export function getComputedStyleWithoutDefaults(element) {
   var elementStyles = getComputedStyle(element);
 
   // calculating the difference
-  var diff = {};
-  for (var key in elementStyles) {
-    if (elementStyles.hasOwnProperty(key) && defaultStyles[key] !== elementStyles[key]) {
-      diff[key] = elementStyles[key];
+  var diffObj = {};
+  for (var i = 0; i < properties.length; ++i) {
+    if (defaultStyles[properties[i]] !== elementStyles[properties[i]]) {
+      diffObj[properties[i]] = elementStyles[properties[i]];
     }
   }
 
   // clear dom
   dummy.remove();
 
-  return diff;
+  return diffObj;
 }
-

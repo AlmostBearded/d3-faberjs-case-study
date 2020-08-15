@@ -10,8 +10,10 @@ var layoutProperties = [
   'display',
   'gridTemplateColumns',
   'gridTemplateRows',
-  'gridColumn',
-  'gridRow',
+  'gridColumnStart',
+  'gridColumnEnd',
+  'gridRowStart',
+  'gridRowEnd',
   'justifyItems',
   'alignItems',
   'justifySelf',
@@ -19,8 +21,7 @@ var layoutProperties = [
 ];
 
 export function parseLayoutStyle(element) {
-  var computedStyle = getComputedStyleWithoutDefaults(element);
-  var layoutStyle = {};
+  var computedStyle = getComputedStyleWithoutDefaults(element, layoutProperties);
   for (var i = 0; i < layoutProperties.length; ++i) {
     var value = computedStyle[layoutProperties[i]];
     if (value) {
@@ -28,15 +29,21 @@ export function parseLayoutStyle(element) {
       // have a specified absolute unit so we just remove all units.
       value = value.replace(/px/g, '');
 
-      layoutStyle[layoutProperties[i]] = value;
+      computedStyle[layoutProperties[i]] = value;
     }
   }
 
-  if (Object.keys(layoutStyle).length === 0) {
+  // For some reason some browsers (confirmed with Firefox 79.0) report the width and height of some elements
+  // (maybe it relates to the 'display: grid' property) as 0 which messes up the layouting. For now, there's
+  // no known use case where an actual set width/height is useful so we just delete all of them that are 0.
+  if (computedStyle.height == 0) delete computedStyle.height;
+  if (computedStyle.width == 0) delete computedStyle.width;
+
+  if (Object.keys(computedStyle).length === 0) {
     return null;
   }
 
-  return layoutStyle;
+  return computedStyle;
 }
 
 export function parseDOMHierarchy(element) {
@@ -96,15 +103,15 @@ function cacheLayoutStyles(laidOutElements, layoutHierarchyNodes) {
   }
 }
 
-function setFitContentDimensions(laidOutElements, layoutHierarchyNodes) {
+function setMinContentDimensions(laidOutElements, layoutHierarchyNodes) {
   for (var i = 0; i < laidOutElements.length; ++i) {
     var boundingRect = laidOutElements[i].getBoundingClientRect();
 
-    if (layoutHierarchyNodes[i].style.width === 'fit-content') {
+    if (layoutHierarchyNodes[i].style.width === 'min-content') {
       layoutHierarchyNodes[i].style.width = boundingRect.width;
     }
 
-    if (layoutHierarchyNodes[i].style.height === 'fit-content') {
+    if (layoutHierarchyNodes[i].style.height === 'min-content') {
       layoutHierarchyNodes[i].style.height = boundingRect.height;
     }
   }
@@ -128,7 +135,7 @@ export function computeLayout(laidOutElements, layoutHierarchyNodes, size) {
   layoutHierarchyNodes[0].style.width = size.width;
   layoutHierarchyNodes[0].style.height = size.height;
 
-  setFitContentDimensions(laidOutElements, layoutHierarchyNodes);
+  setMinContentDimensions(laidOutElements, layoutHierarchyNodes);
 
   faberComputeLayout(layoutHierarchyNodes[0]);
 

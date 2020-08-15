@@ -56,7 +56,6 @@
       .left-axis {
         display: grid;
         grid-template-columns: [titleStart] auto [titleEnd margin] 0px [ticksStart] auto [ticksEnd];
-        /* transform: scale(0, 1); */ /* Hide the left axis */
       }
 
       .left-axis .ticks {
@@ -127,6 +126,11 @@
         transition: opacity 0s;
       }
 
+      /* Hide the numeric axis */
+      /* .bar-chart .numeric-axis {
+        transform: scale(0, 1); 
+      } */
+
       @media screen and (min-width: 50rem) {
         #chart {
           width: 100%;
@@ -139,13 +143,10 @@
 
         .left-axis {
           grid-template-columns: [titleStart] auto [titleEnd margin] 10px [ticksStart] auto [ticksEnd];
-          /* transform: scale(1, 1); */ /* Show the left axis */
         }
 
         .bottom-axis {
           grid-template-rows: [ticksStart] auto [ticksEnd margin] 10px [titleStart] auto [titleEnd];
-          /* Show the left axis */
-          /* transform: scale(1, 1); */
         }
 
         .left-axis .ticks text {

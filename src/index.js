@@ -28,7 +28,7 @@ var config = {
     title: 'Population',
   },
   categoricAxis: {
-    title: 'Countries',
+    title: 'Cities',
   },
   barDirection: 'Horizontal', // 'Vertical' or 'Horizontal'
 };

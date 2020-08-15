@@ -2,10 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
   <head>
     <title>D3 + FaberJS Layout - Case Study</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       #chart {
         width: 100%;
-        height: 40rem;
+        height: 90vh;
         transition: height 0.5s;
       }
 
@@ -126,12 +127,11 @@
         transition: opacity 0s;
       }
 
-
       @media screen and (min-width: 40rem) {
-      #chart {
-        width: 100%;
-        height: 30rem;
-      }
+        #chart {
+          width: 100%;
+          height: 70vh;
+        }
         .bar-chart {
           grid-template-columns: [leftMargin] 25px [axis] auto [bars] 1fr [rightMargin] 25px;
           grid-template-rows: [topMargin] 25px [bars] 1fr [axis] auto [bottomMargin] 25px;

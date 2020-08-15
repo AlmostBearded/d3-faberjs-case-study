@@ -32,36 +32,36 @@
 
       .bar-chart {
         display: grid;
-        grid-template-columns: [leftMargin] 2px [axis] auto [bars] 1fr [rightMargin] 2px;
-        grid-template-rows: [topMargin] 0px [bars] 1fr [axis] auto [bottomMargin] 0px;
+        grid-template-columns: [leftMargin] 2px [axisStart] auto [axisEnd barsStart] 1fr [barsEnd rightMargin] 2px;
+        grid-template-rows: [topMargin] 0px [barsStart] 1fr [barsEnd axisStart] auto [axisEnd bottomMargin] 0px;
         justify-items: stretch;
         align-items: stretch;
       }
 
       .bar-chart .left-axis {
-        grid-column: axis / bars;
-        grid-row: bars / axis;
+        grid-column: axisStart / axisEnd;
+        grid-row: barsStart / barsEnd;
       }
 
       .bar-chart .bottom-axis {
-        grid-column: bars / rightMargin;
-        grid-row: axis / bottomMargin;
+        grid-column: barsStart / barsEnd;
+        grid-row: axisStart / axisEnd;
       }
 
       .bar-chart .bars {
-        grid-column: bars / rightMargin;
-        grid-row: bars / axis;
+        grid-column: barsStart / barsEnd;
+        grid-row: barsStart / barsEnd;
       }
 
       .left-axis {
         display: grid;
-        grid-template-columns: [title] auto [margin] 0px [ticks] auto;
+        grid-template-columns: [titleStart] auto [titleEnd margin] 0px [ticksStart] auto [ticksEnd];
         /* transform: scale(0, 1); */ /* Hide the left axis */
       }
 
       .left-axis .ticks {
         width: min-content;
-        grid-column: ticks / 4;
+        grid-column: ticksStart / ticksEnd;
         grid-row: 1 / 2;
       }
 
@@ -71,7 +71,7 @@
 
         height: min-content;
         width: min-content;
-        grid-column: title / margin;
+        grid-column: titleStart / titleEnd;
         grid-row: 1 / 2;
         align-self: center;
       }
@@ -84,13 +84,13 @@
 
       .bottom-axis {
         display: grid;
-        grid-template-rows: [ticks] auto [margin] 0px [title] auto;
+        grid-template-rows: [ticksStart] auto [ticksEnd margin] 0px [titleStart] auto [titleEnd];
       }
 
       .bottom-axis .ticks {
         height: min-content;
         grid-column: 1 / 2;
-        grid-row: ticks / margin;
+        grid-row: ticksStart / ticksEnd;
       }
 
       .bottom-axis .ticks text {
@@ -104,7 +104,7 @@
         height: min-content;
         width: min-content;
         grid-column: 1 / 2;
-        grid-row: title / 4;
+        grid-row: titleStart / titleEnd;
         justify-self: center;
       }
 
@@ -133,17 +133,17 @@
           height: 70vh;
         }
         .bar-chart {
-          grid-template-columns: [leftMargin] 25px [axis] auto [bars] 1fr [rightMargin] 25px;
-          grid-template-rows: [topMargin] 25px [bars] 1fr [axis] auto [bottomMargin] 25px;
+          grid-template-columns: [leftMargin] 25px [axisStart] auto [axisEnd barsStart] 1fr [barsEnd rightMargin] 25px;
+          grid-template-rows: [topMargin] 25px [barsStart] 1fr [barsEnd axisStart] auto [axisEnd bottomMargin] 25px;
         }
 
         .left-axis {
-          grid-template-columns: [title] auto [margin] 10px [ticks] auto;
+          grid-template-columns: [titleStart] auto [titleEnd margin] 10px [ticksStart] auto [ticksEnd];
           /* transform: scale(1, 1); */ /* Show the left axis */
         }
 
         .bottom-axis {
-          grid-template-rows: [ticks] auto [margin] 10px [title] auto;
+          grid-template-rows: [ticksStart] auto [ticksEnd margin] 10px [titleStart] auto [titleEnd];
           /* Show the left axis */
           /* transform: scale(1, 1); */
         }

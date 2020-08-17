@@ -2,13 +2,11 @@ import * as d3 from 'd3';
 import {
   parseDOMHierarchy,
   createLayoutGroups,
-  removeLayoutGroups,
   computeLayout,
   applyLayout,
 } from './layout';
 import { renderLeftTicks, renderBottomTicks, renderTitle, clearTickAttributes } from './axis';
 import { renderVerticalBars, renderHorizontalBars } from './bars';
-import { chainedTransition } from './transition';
 import debounce from 'debounce';
 
 // Data representing the populations of large Austrian cities

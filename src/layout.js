@@ -4,6 +4,7 @@ import { chainedTransition } from './transition';
 import * as d3 from 'd3';
 import { select, transition } from 'd3';
 
+// The CSS properties that are needed for layouting
 var layoutProperties = [
   'width',
   'height',
@@ -20,8 +21,12 @@ var layoutProperties = [
   'alignSelf',
 ];
 
+// Parse the required CSS properties for layouting from the elements computed style
 export function parseLayoutStyle(element) {
+  // Get the computed style for the needed properties
   var computedStyle = getComputedStyleWithoutDefaults(element, layoutProperties);
+
+  // Post-process the computed styles for FaberJS
   for (var i = 0; i < layoutProperties.length; ++i) {
     var value = computedStyle[layoutProperties[i]];
     if (value) {
@@ -46,6 +51,7 @@ export function parseLayoutStyle(element) {
   return computedStyle;
 }
 
+// Parse the DOM hierarchy and create the layout hierarchy needed for FaberJS
 export function parseDOMHierarchy(element) {
   var laidOutElements = [];
   var layoutHierarchyNodes = [];
@@ -53,6 +59,7 @@ export function parseDOMHierarchy(element) {
   return { laidOutElements, layoutHierarchyNodes };
 }
 
+// Parse the DOM hierarchy recursively and create the layout hierarchy needed for FaberJS
 function parseDOMHierarchyRecursive(element, laidOutElements, layoutHierarchyNodes) {
   var hierarchyNode = {
     children: [],
@@ -75,6 +82,7 @@ function parseDOMHierarchyRecursive(element, laidOutElements, layoutHierarchyNod
   return hierarchyNode;
 }
 
+// Create group elements to encapsulate laid out elements
 export function createLayoutGroups(laidOutElements) {
   // The root element does not to be laid out so we don't need to create a group for it.
   var groupElements = [laidOutElements[0]];
@@ -89,20 +97,14 @@ export function createLayoutGroups(laidOutElements) {
   return groupElements;
 }
 
-export function removeLayoutGroups(layoutGroupElements) {
-  for (var i = 1; i < layoutGroupElements.length; ++i) {
-    var laidOutElement = layoutGroupElements[i].children[0];
-    layoutGroupElements[i].parentNode.append(laidOutElement);
-    layoutGroupElements[i].remove();
-  }
-}
-
+// Cache CSS layout properties in the FaberJS layout hierarchy
 function cacheLayoutStyles(laidOutElements, layoutHierarchyNodes) {
   for (var i = 0; i < laidOutElements.length; ++i) {
     layoutHierarchyNodes[i].style = parseLayoutStyle(laidOutElements[i]);
   }
 }
 
+// Set dimensions of layout nodes whose CSS dimensions property is specified as 'min-content'
 function setMinContentDimensions(laidOutElements, layoutHierarchyNodes) {
   for (var i = 0; i < laidOutElements.length; ++i) {
     var boundingRect = laidOutElements[i].getBoundingClientRect();
@@ -117,6 +119,7 @@ function setMinContentDimensions(laidOutElements, layoutHierarchyNodes) {
   }
 }
 
+// Set dimensions of all layout nodes which were unspecified before layouting
 function setLayoutDimensions(layoutHierarchyNodes) {
   for (var i = 0; i < layoutHierarchyNodes.length; ++i) {
     if (!layoutHierarchyNodes[i].style.width) {
@@ -129,6 +132,7 @@ function setLayoutDimensions(layoutHierarchyNodes) {
   }
 }
 
+// Compute the layout to fit into the specified size
 export function computeLayout(laidOutElements, layoutHierarchyNodes, size) {
   cacheLayoutStyles(laidOutElements, layoutHierarchyNodes);
 
@@ -144,6 +148,7 @@ export function computeLayout(laidOutElements, layoutHierarchyNodes, size) {
   faberComputeLayout(layoutHierarchyNodes[0]);
 }
 
+// Apply the computed layout on the layout group elements
 export function applyLayout(layoutGroupElements, layoutHierarchyNodes, transition) {
   for (let i = 1; i < layoutHierarchyNodes.length; ++i) {
 
